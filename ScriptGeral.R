@@ -44,11 +44,13 @@ boxplot(baseSolo$PotassioSaturacaoDeBases, main="PotassioSaturacaoDeBases", ylab
 boxplot(baseSolo$pH, main="pH", ylab="Valores")
 
 dataset = baseFinal
-dataset.new <- baseFinal[, -(17:18)]	#Retira Latitude e Longitude da baseSolo
-dataset.pca <- prcomp(dataset.new[, 5:16], center = TRUE, scale. = TRUE) #Retira Latitude e Longitude da baseColheita para Calcular PCA
+dataset.new <- baseFinal[, -(18:19)]	#Retira Latitude e Longitude da baseSolo
+dataset.pca <- prcomp(dataset.new[, 5:17], center = TRUE, scale. = TRUE) #Retira Latitude e Longitude da baseColheita para Calcular PCA
 
 g <- ggbiplot(dataset.pca, groups = dataset$Produtividade, obs.scale = 1, var.scale = 1, circle = TRUE, ellipse = TRUE)
 print(g)
+
+pairs(dataset.new)
 
 #(6) MAPA
 summary(dataset$Rendimento.seco)
@@ -58,7 +60,8 @@ dataset$Produtividade[dataset$Rendimento.seco<9.3] <- 0 #baixa
 dataset$Produtividade[dataset$Rendimento.seco>10.9] <- 1 #alta
 
 dfDataSet = data.frame(dataset)
-dfAgregado = setNames(aggregate(dfDataSet$Rendimento.seco, by=list(PontoAmostral=dfDataSet$PontosAmostrais), FUN=median), c("PontoAmostral", "Rendimento"))
+dfAgregado = setNames(aggregate(dfDataSet$Rendimento.seco
+  , by=list(PontoAmostral=dfDataSet$PontosAmostrais), FUN=median), c("PontoAmostral", "Rendimento"))
 dfAgregado = dfAgregado[order(dfAgregado$Rendimento, decreasing = TRUE),]
 
 PontoAmostralMaisProdutivo = dfAgregado[1,1]
